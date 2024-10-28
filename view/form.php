@@ -10,6 +10,6 @@
         <input type="date" class="form-control" name="tgl_akhir" placeholder="Tanggal Akhir" value="<?= $edit['tgl_akhir'] ?? ''?>">
     </div>
     <div class="input-group mb-3">
-        <button type="submit" class="btn btn-primary rounded-4"><?= isset($edit) ? 'Update' : 'Simpan'?></button>
+        <button type="submit" class="btn btn-primary rounded-4">Simpan</button>
     </div>
 </form>
