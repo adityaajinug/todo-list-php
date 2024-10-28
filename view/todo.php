@@ -12,17 +12,38 @@ if (isset($_GET['action']) && $_GET['action'] == 'updateStatus' && isset($_GET['
     $newStatus = $todoClass->updateStatus($_GET['id']);
     header('Location: index.php');
     exit();
-}
 
-if($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] == 'create') {
-    $isi = $_POST['isi'];
-    $tgl_awal = $_POST['tgl_awal'];
-    $tgl_akhir = $_POST['tgl_akhir'];
+} elseif($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] === 'create') {
+    $isi = $_POST['isi'] ?? '';
+    $tgl_awal = $_POST['tgl_awal'] ?? '';
+    $tgl_akhir = $_POST['tgl_akhir'] ?? '';
 
-    $todoClass->create($isi, $tgl_awal, $tgl_akhir);
-    header('Location: index.php');
+    $create = $todoClass->create($isi, $tgl_awal, $tgl_akhir);
+    
+    header('Location: index.php?message=' .($create ? 'success' : 'failed'));
     exit();
 
+} elseif(isset($_GET['action']) && $_GET['action'] == 'edit' && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $edit = $todoClass->edit($id);
+
+} elseif($_SERVER['REQUEST_METHOD'] === 'PUT' && $_GET['action'] === 'update') {
+    $id = $_POST['id'] ?? '';
+    $isi = $_POST['isi'] ?? '';
+    $tgl_awal = $_POST['tgl_awal'] ?? '';
+    $tgl_akhir = $_POST['tgl_akhir'] ?? '';
+
+    $update = $todoClass->update($id, $isi, $tgl_awal, $tgl_akhir);
+
+    header('Location: index.php?message=' .($update ? 'success' : 'failed'));
+    exit();
+    
+} elseif(isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id'])) {
+    $id = $_GET['id'];
+    $delete = $todoClass->delete($id);
+
+    header('Location: index.php?message=' .($delete ? 'success' : 'failed'));
+    exit();
 }
 ?>
 
@@ -57,8 +78,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST' && $_GET['action'] == 'create') {
                             </a>
                         </td>
                         <td>
-                            <a href="index.php?action=update&id=<?= $row['id'] ?>" class="btn btn-success rounded-5">Ubah</a>
-                            <a href="#" class="btn btn-danger rounded-5">Hapus</a>
+                            <a href="index.php?action=edit&id=<?= $row['id'] ?>" class="btn btn-success rounded-5">Ubah</a>
+                            <a href="index.php?action=delete&id=<?= $row['id'] ?>" class="btn btn-danger rounded-5" onclick="return confirm('Apakah anda yakin ingin menghapus data ini?')">Hapus</a>
                         </td>
                     </tr>
                     <?php endforeach; ?>

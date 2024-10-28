@@ -26,19 +26,69 @@ class TodoListApp
         }
     }
 
-    public function create()
+    public function create($isi, $tgl_awal, $tgl_akhir)
     {
+        try {
+            $statement = $this->conn->prepare('INSERT INTO todos (isi, tgl_awal, tgl_akhir, status) VALUES (:isi, :tgl_awal, :tgl_akhir, :status)');
+
+            $statement->execute([
+                'isi' => $isi,
+                'tgl_awal' => $tgl_awal,
+                'tgl_akhir' => $tgl_akhir,
+                'status' => 0
+            ]);
+            return true;
+        } catch(PDOException $error) {
+            echo "Failed insert data: " . $error->getMessage();
+            return false;
+        }
+    }
+
+    public function edit($id)
+    {
+        try {
+            $statement = $this->conn->prepare('SELECT * FROM todos WHERE id = :id');
+            $statement->execute(['id' => $id]);
+            $todoId = $statement->fetch(PDO::FETCH_ASSOC);
+            
+            return $todoId;
+
+        } catch(PDOException $error) {
+            echo "Failed get data: " . $error->getMessage();
+            return false;
+        }
+    }
+
+    public function update($id, $isi, $tgl_awal, $tgl_akhir)
+    {
+        try {
+            $statement = $this->conn->prepare('UPDATE todos SET isi = :isi, tgl_awal = :tgl_awal, tgl_akhir = :tgl_akhir WHERE id = :id');
+
+            $statement->execute([
+                'id' => $id,
+                'isi' => $isi,
+                'tgl_awal' => $tgl_awal,
+                'tgl_akhir' => $tgl_akhir
+            ]);
+            return true;
+        } catch(PDOException $error) {
+            echo "Failed update data: " . $error->getMessage();
+            return false;
+        }
 
     }
 
-    public function update()
+    public function delete($id)
     {
+        try {
+            $statement = $this->conn->prepare('DELETE FROM todos WHERE id = :id');
+            $statement->execute(['id' => $id]);
 
-    }
-
-    public function delete()
-    {
-
+            return true;
+        } catch(PDOException $error) {
+            echo "Failed delete data: " . $error->getMessage();
+            return false;
+        }
     }
 
     public function getStatus($status)
